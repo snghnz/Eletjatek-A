@@ -1,68 +1,63 @@
+"use client";
+
 import { useEffect, useState } from "react";
 import EletjatekSzimulator from "@/app/EletjatekSzimulator";
 
-const ROWS = 20;
-const COLS = 20;
-
 export default function App() {
-  const [game] = useState(
-    new EletjatekSzimulator(ROWS, COLS)
+  const [rows, setRows] = useState(20);
+  const [cols, setCols] = useState(20);
+
+  const [game, setGame] = useState(
+    () => new EletjatekSzimulator(20, 20)
   );
 
   const [, forceUpdate] = useState(0);
 
   const [currentPlayer, setCurrentPlayer] =
-    useState(1);
+    useState<number>(1);
 
-  const [running, setRunning] = useState(false);
+  const [running, setRunning] =
+    useState<boolean>(false);
 
-  const [winner, setWinner] = useState("");
+  const [winner, setWinner] =
+    useState<string>("");
 
   const refresh = () => {
     forceUpdate((v) => v + 1);
   };
 
+  const createNewGame = () => {
+    const newGame =
+      new EletjatekSzimulator(rows, cols);
+
+    setGame(newGame);
+    setWinner("");
+    setRunning(false);
+    setCurrentPlayer(1);
+
+    refresh();
+  };
+
   const placeCell = (r: number, c: number) => {
     if (running) return;
 
-    const current =
-      game.matrix.getCell(r, c).getValue();
+    const current = game.getCell(r, c);
 
     if (current === 0) {
-      game.matrix.setCell(
-        r,
-        c,
-        currentPlayer
-      );
+      game.setCell(r, c, currentPlayer);
 
-      setCurrentPlayer(
-        currentPlayer === 1 ? 2 : 1
+      setCurrentPlayer((prev) =>
+        prev === 1 ? 2 : 1
       );
 
       refresh();
     }
-  };  
+  };
 
-  useEffect(() => { 
-    if (!running) return; 
+  useEffect(() => {
+    if (!running) return;
 
-    const interval = setIn  terval(() => {
-      game.nextGeneration();
-
-      const counts = game.countPlayers();
-
-      if (counts.p1 === 0 || counts.p2 === 0) {
-        setRunning(false);
-
-        if (counts.p1 > counts.p2) {
-          setWinner("Játékos 1 nyert!");
-        } else if (counts.p2 > counts.p1) {
-          setWinner("Játékos 2 nyert!");
-        } else {
-          setWinner("Döntetlen!");
-        }
-      }
-
+    const interval = setInterval(() => {
       refresh();
     }, 300);
 
@@ -70,65 +65,103 @@ export default function App() {
   }, [running]);
 
   return (
-    <div
-      className="flex flex-col"
-    >
-      <h1>Kétjátékos Életjáték</h1>
+    <div className="min-h-screen flex flex-col items-center gap-4 p-4 bg-gradient-to-b from-purple-500 to-white">
+      <h1 className="text-3xl font-bold">
+        Kétjátékos Életjáték
+      </h1>
 
-      <h2>
-        Aktuális játékos:
-        {currentPlayer}
+      <div className="flex gap-4 items-center">
+        <div className="flex flex-col items-center">
+          <label>Sorok</label>
+
+          <input
+            type="number"
+            value={rows}
+            min={5}
+            max={50}
+            onChange={(e) =>
+              setRows(Number(e.target.value))
+            }
+            className="border p-2 rounded"
+          />
+        </div>
+
+        <div className="flex flex-col items-center">
+          <label>Oszlopok</label>
+
+          <input
+            type="number"
+            value={cols}
+            min={5}
+            max={50}
+            onChange={(e) =>
+              setCols(Number(e.target.value))
+            }
+            className="border p-2 rounded"
+          />
+        </div>
+
+        <button
+          onClick={createNewGame}
+          className="px-4 py-2 bg-purple-600 text-white rounded-lg mt-5"
+        >
+          Új pálya
+        </button>
+      </div>
+
+      <h2 className="text-xl">
+        Aktuális játékos: {currentPlayer}
       </h2>
 
       <div
+        className="border rounded-2xl p-2 shadow-xl bg-gradient-to-br from-purple-300 to-white"
         style={{
           display: "grid",
-          gridTemplateColumns: `repeat(${COLS}, 25px)`,
+          gridTemplateColumns: `repeat(${cols}, 25px)`,
         }}
       >
-        {game.matrix
-          .getRows()
-          .map((row, r) =>
-            row
-              .getColumns()
-              .map((cell, c) => (
-                <div
-                  key={`${r}-${c}`}
-                  onClick={() =>
-                    placeCell(r, c)
-                  }
-                  style={{
-                    width: 25,
-                    height: 25,
-                    border:
-                      "1px solid black",
-                    background:
-                      cell.getValue() === 1
-                        ? "red"
-                        : cell.getValue() === 2
-                        ? "blue"
-                        : "white",
-                  }}
-                />
-              ))
-          )}
+        {game.getRows().map((row, r) =>
+          row.map((cell, c) => (
+            <div
+              key={`${r}-${c}`}
+              onClick={() => placeCell(r, c)}
+              style={{
+                width: 25,
+                height: 25,
+                border: "1px solid black",
+                borderRadius: 6,
+                background:
+                  cell === 1
+                    ? "linear-gradient(to bottom right, #ff4d4d, #990000)"
+                    : cell === 2
+                    ? "linear-gradient(to bottom right, #4da6ff, #003d99)"
+                    : "linear-gradient(to bottom right, #f3e8ff, white)",
+                cursor: "pointer",
+              }}
+            />
+          ))
+        )}
       </div>
 
-      <div style={{ marginTop: 20 }}>
+      <div className="flex gap-4 mt-4">
         <button
           onClick={() => setRunning(true)}
+          className="px-4 py-2 bg-green-500 text-white rounded"
         >
           Start
         </button>
 
         <button
           onClick={() => setRunning(false)}
+          className="px-4 py-2 bg-red-500 text-white rounded"
         >
           Stop
         </button>
       </div>
 
-      <h2>{winner}</h2>
+      <h2 className="text-2xl font-bold">
+        {winner}
+      </h2>
     </div>
   );
 }
