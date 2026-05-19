@@ -186,13 +186,13 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center gap-4 p-4 bg-gradient-to-b from-purple-500 to-white">
-      <h1 className="text-3xl font-bold">
+    <div className="min-h-screen flex flex-col items-center gap-6 p-4 bg-gradient-to-b from-purple-500  to-purple-300 ">
+      <h1 className="text-5xl font-bold underline decoration-purple-900 decoration-wavy">
         Kétjátékos Életjáték
       </h1>
 
-      <div className="flex gap-4 items-center flex-wrap">
-        <div className="flex flex-col items-center">
+      <div className="flex gap-6 items-center flex-wrap">
+        <div className="flex flex-col items-center font-bold">
           <label>Sorok</label>
 
           <input
@@ -205,11 +205,11 @@ export default function App() {
                 Number(e.target.value)
               )
             }
-            className="border p-2 rounded"
+            className="border p-2 rounded border-purple-700"
           />
         </div>
 
-        <div className="flex flex-col items-center">
+        <div className="flex flex-col items-center font-bold">
           <label>Oszlopok</label>
 
           <input
@@ -222,11 +222,11 @@ export default function App() {
                 Number(e.target.value)
               )
             }
-            className="border p-2 rounded"
+            className="border p-2 rounded border-purple-700"
           />
         </div>
 
-        <div className="flex flex-col items-center">
+        <div className="flex flex-col items-center font-bold">
           <label>Max sejtek</label>
 
           <input
@@ -239,19 +239,19 @@ export default function App() {
                 Number(e.target.value)
               )
             }
-            className="border p-2 rounded"
+            className="border p-2 rounded border-purple-700"
           />
         </div>
 
         <button
           onClick={createNewGame}
-          className="px-4 py-2 bg-purple-600 text-white rounded-lg mt-5"
+          className="px-4 py-2 bg-purple-600 text-white rounded-lg mt-5 font-bold"
         >
           Új pálya
         </button>
       </div>
 
-      <h2 className="text-xl font-bold">
+      <h2 className="text-xl font-bold underline decoration-purple-600 decoration-wavy">
         Aktuális játékos:
         {currentPlayer === 1
           ? " 🔴 Piros"
@@ -271,7 +271,7 @@ export default function App() {
       </div>
 
       <div
-        className="border rounded-2xl p-2 shadow-xl bg-gradient-to-br from-purple-300 to-white"
+        className="border rounded-2xl p-2 shadow-xl bg-gradient-to-br from-purple-700 to-purple-300"
         style={{
           display: "grid",
           gridTemplateColumns: `repeat(${cols}, 25px)`,
@@ -306,20 +306,20 @@ export default function App() {
       <div className="flex gap-4 mt-4">
         <button
           onClick={startGame}
-          className="px-4 py-2 bg-green-500 text-white rounded-lg"
+          className="px-4 py-2 bg-purple-600 text-white rounded-lg font-bold"
         >
           Start
         </button>
 
         <button
           onClick={stopGame}
-          className="px-4 py-2 bg-red-500 text-white rounded-lg"
+          className="px-4 py-2 bg-blue-500 text-white rounded-lg font-bold"
         >
           Stop
         </button>
       </div>
 
-      <h2 className="text-2xl font-bold">
+      <h2 className="text-2xl font-bold text-purple-950">
         {winner}
       </h2>
     </div>
